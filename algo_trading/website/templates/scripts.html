@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<div class="container">
+	 <h4 class="my-4">Scripts of the day</h4>
+		<div class="row">
+			<div class="col-lg-2">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="well well-sm"><a href="/algotrade/scriptview">Scripts for Today</a></div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="well well-sm"><a href="/algotrade/strategyview">Strategy</a></div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="well well-sm"><a href="/algotrade/tradingview">Trading</a></div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Panel body -->
+
+			<div class="col-lg-7">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="container-fluid">
+							<div class="row" style="font-weight:normal">
+								<form action="/algotrade/scriptview/list/" method="POST" name="scForm" id="scForm">
+									{% csrf_token %}
+								<div class="col-lg-4">
+									<div class="form-group">
+											<select class="form-control" name="{{form.selScriptName.name}}" title="Script Name..">
+												{% with value=form.selScriptName.value %}
+											<option value="0" selected> Script Name..</option>
+										{% for script in scripts %}
+												<option value="{{ script.script_id }}" {% if script.script_id|slugify == value|slugify %}selected="selected"{% endif %}>{{ script.script_name }}</option>
+										{% endfor %}
+										{% endwith%}
+										</select>
+									</div>
+								</div>
+								<!-- end -->
+								<div class="col-lg-4">
+									<div class="form-group">
+											<select class="form-control" name="{{form.selStrategyName.name}}" title="Strategy Name..">
+												{% with value=form.selStrategyName.value %}
+											<option value="0" selected> Strategy Name..</option>
+										{% for startegy in startegies %}
+												<option value="{{ startegy.strategy_id }}" {% if startegy.strategy_id|slugify == value|slugify %}selected="selected"{% endif %}>{{ startegy.strategy_name }}</option>
+										{% endfor %}
+										{% endwith%}
+										</select>
+									</div>
+								</div>
+								<div class="col-lg-4">
+									<div class="form-group">
+											<select class="form-control" name="{{form.selTradeType.name}}" title="Trade Type ..">
+													{% with value=form.selTradeType.value %}
+											<option value="0" selected> Trade Type.. </option>
+										{% for trade in trades %}
+												<option value="{{ trade.trade_id }}" {% if trade.trade_id|slugify == value|slugify %}selected="selected"{% endif %}>{{ trade.trade_value }}</option>
+										{% endfor %}
+											{% endwith%}
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-4"></div>
+							<div class="col-lg-4">
+								<button type="submit" class="btn btn-primary" style="width:100px" onclick="/algotrade/">Save</button>
+							</div>
+							<input type="hidden" name="hid_script_id" value="" />
+							<input type="hidden" name="operation" value="">
+						</form>
+						<div class="col-lg-4"></div>
+						</div>
+						<br>
+						<div class="row">
+
+							<div class="col-lg-12">
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th>Sl No</th>
+											<th>Script Name</th>
+											<th>Strategy</th>
+											<th>Trade Type</th>
+										</tr>
+									</thead>
+									<tbody style="font-weight:normal">
+										{% for script in scriptList %}
+
+										<tr >
+											<td>{{forloop.counter}}</td>
+											<td>{{script.script_name}}</td>
+											<td>{{script.strategy.strategy_name}}</td>
+											<td>{{script.trade.trade_value}}</td>
+											<td><button type="button" href="{% url 'website:scripteditview' script.script_id %}"
+													class="btn btn-block btn-primary" style="float:right;width:100px" data-toggle="modal"
+            								data-target="#myModal1">Edit/Del</button>
+												</td>
+										</tr>
+										{% endfor %}
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<!-- lastrow -->
+
+					</div>
+				</div>
+			</div>
+		</div>
+</div>
+<div id="myModal1" class="modal fade" role="dialog">
+		 <div class="modal-dialog">
+			 <div class="modal-content">
+					 <!-- Content will be loaded here from "remote.php" file -->
+			 </div>
+		 </div>
+</div>
+</div>
+{% endblock %}

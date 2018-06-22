@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+ <h4 class="my-4">Strategy</h4>
+  <div class="row">
+    <div class="col-lg-2">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="well well-sm"><a href="/algotrade/scriptview">Scripts for Today</a></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="well well-sm"><a href="/algotrade/strategyview">Strategy</a></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="well well-sm"><a href="/algotrade/tradingview">Trading</a></div>
+        </div>
+      </div>
+    </div>
+
+			<!-- Panel body -->
+
+			<div class="col-lg-7">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="container-fluid">
+							<div class="row" style="font-weight:normal">
+                <form action="/algotrade/strategyListView/" method="POST">
+                  {% csrf_token %}
+                <div class="col-lg-4">
+                  <div class="form-group">
+                      <select class="form-control" name="{{form.selStrategyName.name}}" title="Strategy Name..">
+                        {% with value=form.selStrategyName.value %}
+                        <option value="0" selected> Strategy Name..</option>
+                    {% for startegy in startegies %}
+                        <option value="{{ startegy.strategy_id }}"  {% if startegy.strategy_id|slugify == value|slugify %}selected="selected"{% endif %}>{{ startegy.strategy_name }}</option>
+                    {% endfor %}
+                    </select>
+                      {% endwith %}
+                  </div>
+                </div>
+								<!-- end -->
+                <div class="col-lg-4">
+                  <div class="form-group">
+                      <select class="form-control" name="selTimeFrame" title="Strategy Name..">
+                          {% with value=form.selTimeFrame.value %}
+                      <option value="0" selected> Time Frame..</option>
+                    {% for timeframe in timeFrames %}
+                        <option value="{{ timeframe.timeframe_value }}"  {% if timeframe.timeframe_value|slugify == value|slugify %}selected="selected"{% endif %}>{{ timeframe.timeframe_value }}</option>
+                    {% endfor %}
+                    </select>
+                      {% endwith %}
+                  </div>
+                </div>
+								<div class="col-lg-4">
+									<button type="submit" class="btn btn-block btn-primary" style="float:right;width:100px">Filter</button>
+								</div>
+              </form>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-12">
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th>Strategy Name</th>
+											<th>Time Frame</th>
+											<th>Buffer Amount</th>
+											<th>Action</th>
+										</tr>
+									</thead>
+									<tbody>
+                    {% for st in stList %}
+										<tr style="font-weight:normal">
+											<td>{{st.strategy_name}}</td>
+											<td>{{st.time_frame}}</td>
+											<td>{{st.buffer_amnt}}</td>
+											<td><button type="button" href="{% url 'website:strategyeditview' st.strategy_id %}"
+													class="btn btn-block btn-primary" style="float:right;width:100px" data-toggle="modal"
+            								data-target="#myModal">Edit/Delete</button></td>
+										</tr>
+                    {% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<!-- lastrow -->
+						<div class="text-center">
+							<button href="/algotrade/strategyaddview" type="button" class="btn btn-primary" style="width:100px" data-toggle="modal"
+								data-target="#myModal">Add</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		  <div id="myModal" class="modal fade" role="dialog">
+			     <div class="modal-dialog modal-lg">
+             <div class="modal-content">
+                 <!-- Content will be loaded here from "remote.php" file -->
+             </div>
+				   </div>
+      </div>
+		</div>
+
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+ <h4 class="my-4">Trading</h4>
+  <div class="row">
+    <div class="col-lg-2">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="well well-sm"><a href="/algotrade/scriptview">Scripts for Today</a></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="well well-sm"><a href="/algotrade/strategyview">Strategy</a></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="well well-sm"><a href="/algotrade/tradingview">Trading</a></div>
+        </div>
+      </div>
+    </div>
+
+			<!-- Panel body -->
+
+			<div class="col-lg-6">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="container-fluid">
+							<div class="row" style="font-weight:normal">
+                <form action="/algotrade/tradingview/list/" method="POST" name="trForm" id="trForm">
+                  {% csrf_token %}
+
+                  <div class="col-lg-4">
+  									<div class="form-group">
+  											<select class="form-control" name="{{form.selScriptName.name}}" title="Script Name..">
+  												{% with value=form.selScriptName.value %}
+  											<option value="0" selected> Script Name..</option>
+  										{% for script in scripts %}
+  												<option value="{{ script.script_id }}" {% if script.script_id|slugify == value|slugify %}selected="selected"{% endif %}>{{ script.script_name }}</option>
+  										{% endfor %}
+  										{% endwith%}
+  										</select>
+  									</div>
+  								</div>
+  								<!-- end -->
+  								<div class="col-lg-4">
+  									<div class="form-group">
+  											<select class="form-control" name="{{form.selTradeType.name}}" title="Trade Type ..">
+  													{% with value=form.selTradeType.value %}
+  											<option value="0" selected> Trade Type.. </option>
+  										{% for trade in trades %}
+  												<option value="{{ trade.trade_id }}" {% if trade.trade_id|slugify == value|slugify %}selected="selected"{% endif %}>{{ trade.trade_value }}</option>
+  										{% endfor %}
+  											{% endwith%}
+  										</select>
+  									</div>
+  								</div>
+                  <div class="col-lg-4">
+                    <button type="submit" class="btn btn-primary" style="float: right;width:100px" onclick="/algotrade/">Save</button>
+                  </div>
+  							</div>
+                <input type="hidden" name="hid_script_id" value="" />
+  							<input type="hidden" name="operation" value="">
+  						</form>
+            </div>
+
+						<div class="row">
+							<div class="col-lg-12">
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th>Sl No</th>
+											<th>Script Name</th>
+											<th>Trade Type</th>
+											<th></th>
+										</tr>
+									</thead>
+                  <tbody style="font-weight:normal">
+                    {% for trade in tradeList %}
+
+                    <tr >
+                      <td>{{forloop.counter}}</td>
+                      <td>{{trade.script.script_name}}</td>
+                      <td>{{trade.trade.trade_value}}</td>
+                      <td><div class="checkbox">
+                          <label><input type="radio" name="listSelected" value="{{trade.trading_id}}"></label>
+                        </div></td>
+                    </tr>
+                    {% endfor %}
+
+                  </tbody>
+                </table>
+
+          		</div>
+						</div>
+						<!-- lastrow -->
+						<div class="text-center">
+							<button type="submit" class="btn btn-success"> Buy </button>
+              <button type="submit" class="btn btn-danger"> Sell </button>
+						</div>
+          </div>
+          </div>
+					</div>
+				</div>
+			</div>
+
+{% endblock %}

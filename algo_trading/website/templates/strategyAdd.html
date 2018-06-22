@@ -1,0 +1,130 @@
+<div class="modal-content" onload="javascript:Init()">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h3 class="modal-title">Add Strategy</h4>
+	</div>
+	<form action="/algotrade/strategyaddview/" method="POST" id="popUpForm">
+		  {% csrf_token %}
+	<div class="modal-body">
+	<div class="container-fluid">
+		<div class="row" style="font-weight:normal">
+			<div class="col-lg-4">
+				<input type="hidden" name="{{form.st_id.name}}" value="{{form.st_id.value}}" id="st_id"/>
+				<input type="text" class="form-control" name="{{form.strategy_name.name}}" value="{{form.strategy_name.value|default:""}}"
+					placeholder="Strategy Name" />
+			</div>
+			<div class="col-lg-4">
+				<div class="checkbox">
+					<label><input type="checkbox" name="{{form.is_open_price.name}}" value="{{form.is_open_price.value}}" {% if form.is_open_price.value == True %} checked {% endif %} id="my-checkbox" onchange="javascript:change();onChange('my-checkbox')">Sell/Buy on Open Price</label>
+				</div>
+			</div>
+			<div class="col-lg-4"></div>
+		</div>
+		<div class="row" id="candleTitle" style="display:{% if form.is_open_price.value == True %} none {%endif%}">
+			<div class="col-lg-4">Candel Properties</div>
+			<div class="col-lg-4"></div>
+			<div class="col-lg-4"></div>
+		</div>
+
+		<div class="row" id="candleProps" style="font-weight:normal;display:{% if form.is_open_price.value == True %} none {%endif%}">
+			<div class="col-lg-4">
+				<select class="form-control" name="{{form.time_frame.name}}" title="Strategy Name..">
+						{% with value=form.time_frame.value %}
+				<option value="0" selected> Time Frame..</option>
+				{% for timeframe in timeFrames %}
+					<option value="{{ timeframe.timeframe_value }}"  {% if timeframe.timeframe_value|slugify == value|slugify %}selected="selected"{% endif %}>{{ timeframe.timeframe_value }}</option>
+				{% endfor %}
+				</select>
+				{% endwith %}
+			</div>
+			<div class="col-lg-4"><input type="text" class="form-control" name="{{form.candle_ref.name}}" value="{{form.candle_ref.value|default:""}}"
+					placeholder="Candle Reference"></div>
+			<div class="col-lg-4"><input type="text" class="form-control" name="{{form.no_of_candle.name}}" value="{{form.no_of_candle.value|default:""}}"
+					placeholder="Number of Candle"></div>
+		</div>
+
+		<div class="row" id="candleChkProps" style="font-weight:normal;display:{% if form.is_open_price.value == True %} none {%endif%}">
+			<div class="col-lg-4"><div class="checkbox">
+					<label><input type="checkbox" id="chk_next_candle" onchange="javascript:onChange('chk_next_candle')" name="{{form.chk_next_candle.name}}" value="{{form.chk_next_candle.value}}" {% if form.chk_next_candle.value == True %} checked {% endif %}>Continue for Next Candle</label>
+				</div></div>
+			<div class="col-lg-4"><div class="checkbox">
+					<label><input type="checkbox" id="combine_candle" onchange="javascript:onChange('combine_candle')" name="{{form.combine_candle.name}}" value="{{form.combine_candle.value}}" {% if form.combine_candle.value == True %} checked {% endif %}>Combine Candle</label>
+				</div></div>
+			<div class="col-lg-4"><div class="checkbox">
+					<label><input type="checkbox" id="reverse_trade" onchange="javascript:onChange('reverse_trade')" name="{{form.reverse_trade.name}}" value="{{form.reverse_trade.value}}" {% if form.reverse_trade.value == True %} checked {% endif %}>Reverse Trade on SL Hit</label>
+				</div></div>
+		</div>
+
+		<div class="row" style="font-weight:normal">
+			<div class="col-lg-4">
+				<input type="text" class="form-control" name="{{form.buffer_amnt.name}}" value="{{form.buffer_amnt.value|default:""}}"
+					placeholder="Buffer Amount">
+			</div>
+			<div class="col-lg-4">
+				<select class="form-control" name="{{form.target_id.name}}" title="Strategy Name..">
+				{% with value=form.target_id.value %}
+				<option value="0" selected> Targets..</option>
+				{% for target in targets %}
+					<option value="{{ target.target_id }}"  {% if target.target_id|slugify == value|slugify %}selected="selected"{% endif %}>{{ target.target_desc }}</option>
+				{% endfor %}
+				</select>
+				{% endwith %}
+			</div>
+			<div class="col-lg-4">
+				<select class="form-control" name="{{form.stoploss_id.name}}" title="Strategy Name..">
+						{% with value=form.stoploss_id.value %}
+				<option value="0" selected> Stop loss..</option>
+				{% for stop in stoploss %}
+					<option value="{{ stop.stoploss_id }}"  {% if stop.stoploss_id|slugify == value|slugify %}selected="selected"{% endif %}>{{ stop.stoploss_desc }}</option>
+				{% endfor %}
+				</select>
+				{% endwith %}
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-lg-4">Conditions</div>
+			<div class="col-lg-4"></div>
+			<div class="col-lg-4"></div>
+		</div>
+
+		<div class="row" style="font-weight:normal">
+			<div class="col-lg-4">
+				<input type="text" class="form-control" name="{{form.condition1.name}}" value="{{form.condition1.value|default:""}}"
+					placeholder="Condition 1">
+			</div>
+			<div class="col-lg-4"><input type="text" class="form-control" name="{{form.condition2.name}}" value="{{form.condition2.value|default:""}}"
+					placeholder="Condition 2"></div>
+			<div class="col-lg-4"><input type="text" class="form-control" name="{{form.condition3.name}}" value="{{form.condition3.value|default:""}}"
+					placeholder="Condition 3"></div>
+		</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		{% if editOps %}
+			<div class="text-center">
+			<input type="hidden" name="ops" value="Edit" />
+			<button type="submit" class="btn btn-primary" style="width:100px">Update</button>
+			<button type="button" id="closeModal" onclick="javascript:onDelete()" href="{% url 'website:strategydelview' form.st_id.value %}" data-target="_parent" class="btn btn-primary" style="width:100px">Delete</button>
+			</div>
+		{% endif %}
+		{% if not editOps %}
+			<div class="text-center">
+			<input type="hidden" name="ops" value="Add" />
+			<button type="submit" class="btn btn-primary" style="width:100px">Save</button>
+			</div>
+		{% endif %}
+	</div>
+</form>
+</div>
+
+<script type="text/javascript">
+$('#closeModal').click(function(){
+	var loc = '/alogtrade/strategyview/'+{{form.st_id.value}}+'/del';
+	var form = document.getElementById("popStForm");
+	form.elements["ops"].value = "Del";
+	form.submit();
+	$('#myModal').modal('hide');
+
+});
+</script>

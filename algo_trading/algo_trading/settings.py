@@ -25,12 +25,13 @@ SECRET_KEY = '34pta92pjg^u&rs6sm6=1rdqh1kll=w2bh(v@#*59pt-n2r=#@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['api.upstox.com','127.0.0.1']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'website',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -79,8 +80,8 @@ DATABASES = {
         'NAME': 'test',
         'USER': 'root',
         'PASSWORD': 'rootroot',
-        'Host':'localhost',
-        'port' : '3306',
+        'HOST':'127.0.0.1',
+        'PORT' : '3306',
     }
 }
 

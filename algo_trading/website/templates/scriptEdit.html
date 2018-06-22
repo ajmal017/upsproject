@@ -1,0 +1,64 @@
+<div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" href="/algotrade/scriptview/">&times;</button>
+		<h3 class="modal-title">Edit Script</h4>
+	</div>
+	<form action="/algotrade/scripteditedview/" method="POST" id="popUpForm">
+		  {% csrf_token %}
+	<div class="modal-body">
+	<div class="container-fluid">
+		<div class="row" style="font-weight:normal">
+			<div class="col-lg-4">
+				<input type="hidden" name="{{form.st_id.name}}" value="{{form.st_id.value}}" id="st_id"/>
+				<input type="text" class="form-control" name="{{form.script_name.name}}" value="{{form.script_name.value}}"
+					placeholder="Script Name" />
+			</div>
+			<div class="col-lg-4"></div>
+		</div>
+		<div class="row" style="font-weight:normal">
+			<div class="col-lg-4">
+				<div class="form-group">
+						<select class="form-control" name="{{form.selStrategyName.name}}" title="Strategy Name..">
+							{% with value=form.selStrategyName.value %}
+						<option value="0" selected> Strategy Name..</option>
+					{% for startegy in startegies %}
+							<option value="{{ startegy.strategy_id }}" {% if startegy.strategy_id|slugify == value|slugify %}selected="selected"{% endif %}>{{ startegy.strategy_name }}</option>
+					{% endfor %}
+					{% endwith%}
+					</select>
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="form-group">
+						<select class="form-control" name="{{form.selTradeType.name}}" title="Trade Type ..">
+								{% with value=form.selTradeType.value %}
+						<option value="0" selected> Trade Type.. </option>
+					{% for trade in trades %}
+							<option value="{{ trade.trade_id }}" {% if trade.trade_id|slugify == value|slugify %}selected="selected"{% endif %}>{{ trade.trade_value }}</option>
+					{% endfor %}
+						{% endwith%}
+					</select>
+				</div>
+			</div>
+	</div>
+	<div class="row" style="font-weight:normal">
+		<div class="col-lg-4">
+			<input type="text" class="form-control" name="{{form.exchange_type.name}}" value="{{form.exchange_type.value|default:""}}"
+				placeholder="Exchange Type" />
+		</div>
+		<div class="col-lg-4"><div class="checkbox">
+				<label><input id="isActive" onchange="javascript:onChange('isActive')" type="checkbox" name="{{form.is_strategy_active.name}}" value="{{form.is_strategy_active.value}}" {% if form.is_strategy_active.value == True %} checked {% endif %}>Is Active</label>
+			</div></div>
+	</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+			<div class="text-center">
+
+			<button type="button" class="btn btn-primary" style="float:center;width:100px" onclick="javascript:onDelete()">Delete</button>
+			<input type="hidden" name="ops" value="Edit" />
+			<button type="submit" class="btn btn-primary" style="width:100px">Save</button>
+			</div>
+	</div>
+</form>
+</div>
